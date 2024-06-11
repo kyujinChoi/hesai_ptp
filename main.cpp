@@ -77,6 +77,10 @@ int runPTP(std::string interface, std::string fn)
 {
     std::string pkillptp4l = "sudo pkill -9 -f ptp4l";
     int result = system(pkillptp4l.c_str());
+    std::string pkillphc2sys = "sudo pkill -9 -f phc2sys";
+    result = system(pkillphc2sys.c_str());
+    std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -a -rr -m; exec bash\"";
+    system(phc2sysCMD.c_str());
     std::string runPTP = "sudo ptp4l -f " + fn + " -m -l 5 -i " + interface;
     result = system(runPTP.c_str());
     return result;
@@ -87,6 +91,8 @@ int main(int argc, char **argv)
         std::cerr << "This program must be run as root (sudo). terminate" << std::endl;
         return 1;
     }
+    
+
     std::string fn;
     std::vector<std::string> interfaces = getPTPcandidates();
     if(interfaces.size() > 1)
@@ -106,6 +112,8 @@ int main(int argc, char **argv)
         fn.assign(argv[1]);
     else
         fn.assign("../default.conf");
+
+    
 
     runPTP(interfaces[0], fn);
     return 0;
