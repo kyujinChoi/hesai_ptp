@@ -97,7 +97,11 @@ int main(int argc, char **argv)
         std::cout << "terminate\n";
         exit(0);
     }
-    
+    else if(interfaces.size() == 0)
+    {
+        std::cout << "Cannot find any interface with HW Timestamp, terminate" << std::endl;
+        exit(0);
+    }
     if(argc > 1)
         fn.assign(argv[1]);
     else
