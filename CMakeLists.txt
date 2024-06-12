@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(ptp LANGUAGES CXX)
+project(lidar_ptp LANGUAGES CXX)
 
 include_directories(./include)
 
