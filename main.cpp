@@ -9,7 +9,17 @@
 #include <linux/ethtool.h>
 #include <linux/sockios.h>
 #include <linux/net_tstamp.h> 
-
+#include <signal.h>
+void sig_handler(int signum)
+{
+    std::cout << "[hesai_ptp]Receive signum: " << signum << std::endl;
+    
+    std::string pkillphc2sys = "sudo pkill -9 -f phc2sys";
+    int result = system(pkillphc2sys.c_str());
+    std::string pkillptp4l = "sudo pkill -9 -f ptp4l";
+    result = system(pkillptp4l.c_str());
+    exit(0);
+}
 
 bool isHwTimestampEnabled(const std::string &interface)
 {
@@ -79,8 +89,9 @@ int runPTP(std::string interface, std::string fn)
     int result = system(pkillptp4l.c_str());
     std::string pkillphc2sys = "sudo pkill -9 -f phc2sys";
     result = system(pkillphc2sys.c_str());
-    std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -a -rr -m; exec bash\"";
-    system(phc2sysCMD.c_str());
+    // std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -a -rr -m\"";
+    std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -w -s CLOCK_REALTIME -c "+ interface +" -m\"";
+    result = system(phc2sysCMD.c_str());
     std::string runPTP = "sudo ptp4l -f " + fn + " -m -l 5 -i " + interface;
     result = system(runPTP.c_str());
     return result;
@@ -91,7 +102,9 @@ int main(int argc, char **argv)
         std::cerr << "This program must be run as root (sudo). terminate" << std::endl;
         return 1;
     }
-    
+    signal(SIGINT, sig_handler);
+    signal(SIGKILL, sig_handler);
+    signal(SIGTERM, sig_handler);
 
     std::string fn;
     std::vector<std::string> interfaces = getPTPcandidates();

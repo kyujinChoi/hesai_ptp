@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(hesai_ptp LANGUAGES CXX)
+project(ptp LANGUAGES CXX)
 
 include_directories(./include)
 
