@@ -90,9 +90,10 @@ int runPTP(std::string interface, std::string fn)
     std::string pkillphc2sys = "sudo pkill -9 -f phc2sys";
     result = system(pkillphc2sys.c_str());
     // std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -a -rr -m\"";
-    std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -w -s CLOCK_REALTIME -c "+ interface +" -m\"";
+
+    std::string phc2sysCMD = "gnome-terminal -- bash -c  \"sudo phc2sys -w -s CLOCK_REALTIME -c "+ interface +" -m -S 1\"";
     result = system(phc2sysCMD.c_str());
-    std::string runPTP = "sudo ptp4l -f " + fn + " -m -l 5 -i " + interface;
+    std::string runPTP = "sudo ptp4l -f " + fn + " -H -m -i " + interface;
     result = system(runPTP.c_str());
     return result;
 }
